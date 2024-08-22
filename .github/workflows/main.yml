@@ -13,19 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Debugging Step to Print Secrets (use with caution)
-      - name: Print Secrets for Debugging
-        run: |
-          echo "SQL_SERVER_NAME: ${{ secrets.SQL_SERVER_NAME }}"
-          echo "SQL_DATABASE_NAME: ${{ secrets.SQL_DATABASE_NAME }}"
-          echo "SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}"
-          echo "SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}"
-      
       # Directly set the connection string inline
       - name: Build and Deploy SQL Project
         uses: azure/sql-action@v2.3
         with:
-          connection-string: "Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;User=${{ secrets.SQL_ADMIN_USER }};Password=${{ secrets.SQL_ADMIN_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;;Initial Catalog=dp3020db02"
+          connection-string: "Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;User=${{ secrets.SQL_ADMIN_USER }};Password=${{ secrets.SQL_ADMIN_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Initial Catalog=dp3020db02"
           path: './dp3020db02.sqlproj'
           action: 'publish'
           build-arguments: '-p:Configuration=Release'
