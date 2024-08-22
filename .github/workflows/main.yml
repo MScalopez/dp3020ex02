@@ -11,16 +11,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up .NET
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '5.0.x'
-          
-      - name: Build Project
+
+      - name: Build SQL Database Project
         working-directory: ./dp3020db02
-        run: dotnet build
+        run: msbuild /t:Build /p:Configuration=Release dp3020db02.sqlproj
+        
+      - name: List Build Directory
+        run: ls -R ./dp3020db02/bin/Release
         
       - name: Deploy to Azure SQL Database
         run: |
           sqlpackage /Action:Publish /SourceFile:./dp3020db02/bin/Release/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
-
