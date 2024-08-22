@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - uses: azure/login@v1                            # Azure login required to add a temporary firewall rule
+
 
       # Build and Deploy SQL Project
       - name: Build and Deploy SQL Project
