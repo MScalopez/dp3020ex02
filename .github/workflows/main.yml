@@ -22,6 +22,12 @@ jobs:
           $msbuildPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
           echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
 
+      - name: Locate sqlpackage
+        id: locate-sqlpackage
+        run: |
+          $sqlpackagePath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.SQL.DataTierAppFramework -find sqlpackage.exe
+          echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
+
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: |
@@ -32,4 +38,4 @@ jobs:
 
       - name: Deploy to Azure SQL Database
         run: |
-          sqlpackage /Action:Publish /SourceFile:./dp3020db02/bin/Release/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
+          & $env:SQLPACKAGE_PATH /Action:Publish /SourceFile:./dp3020db02/bin/Release/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
