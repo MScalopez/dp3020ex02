@@ -15,8 +15,8 @@ jobs:
         run: sudo apt-get install -y msbuild
 
       - name: Build SQL Database Project
-        run: msbuild /t:Build /p:Configuration=Release ./dp3020db02/db3020db02.sqlproj
+        run: msbuild /t:Build /p:Configuration=Release ./dp3020db02/dp3020db02.sqlproj
          
       - name: Deploy to Azure SQL Database
         run: |
-          sqlpackage /Action:Publish /SourceFile:$(Build.ArtifactStagingDirectory)/db3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:db3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
+          sqlpackage /Action:Publish /SourceFile:$(Build.ArtifactStagingDirectory)/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
