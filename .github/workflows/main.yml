@@ -6,39 +6,28 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       # Install .NET Framework 4.8 Developer Pack
       - name: Install .NET Framework 4.8 Developer Pack
         run: |
           choco install netfx-4.8-devpack -y
 
-      # Install Visual Studio Build Tools with SSDT Components (if needed)
-      - name: Install Visual Studio Build Tools
-        run: |
-          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.DataTools --includeRecommended --includeOptional" -y
-
       # Install sqlpackage using Chocolatey as a fallback
       - name: Install sqlpackage
         run: |
           choco install sqlpackage -y
-          $sqlpackagePath = (Get-Command sqlpackage).Path
-          echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
 
-      # Build the SQL Database Project using MSBuild with .NET 4.8
-      - name: Build SQL Database Project
-        working-directory: ./dp3020db02
-        run: |
-          & $env:MSBUILD_PATH /t:Build /p:Configuration=Release /p:TargetFrameworkVersion=v4.8 dp3020db02.sqlproj
-
-      # List the build output directory
-      - name: List Build Directory
-        run: dir ./dp3020db02/bin/Release
-
-      # Deploy the SQL Database using sqlpackage.exe
-      - name: Deploy to Azure SQL Database
-        run: |
-          & $env:SQLPACKAGE_PATH /Action:Publish /SourceFile:./dp3020db02/bin/Release/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
+      # Use Azure SQL Action to build and deploy the SQL project
+      - name: Build and Deploy SQL Project
+        uses: azure/sql-action@v2.3
+        with:
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          path: './dp3020db02.sqlproj'
+          action: 'publish'
+          build-arguments: '-p:Configuration=Release -p:TargetFrameworkVersion=v4.8'
