@@ -26,7 +26,11 @@ jobs:
         id: locate-sqlpackage
         run: |
           $sqlpackagePath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.SQL.DataTierAppFramework -find sqlpackage.exe
+          echo "Found sqlpackage at: $sqlpackagePath"
           echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
+
+      - name: Debug SQLPACKAGE_PATH
+        run: echo "sqlpackage path: $env:SQLPACKAGE_PATH"
 
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
