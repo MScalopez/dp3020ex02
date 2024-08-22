@@ -7,17 +7,18 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Can also use windows-latest depending on your environment
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # Directly set the connection string inline
+      # Build and Deploy SQL Project
       - name: Build and Deploy SQL Project
         uses: azure/sql-action@v2.3
         with:
           connection-string: "Server=tcp:calopezdp3020svr02.database.windows.net,1433;Initial Catalog=dp3020db02;Persist Security Info=False;User ID=dp3020admin;Password=$@P@ssW0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
           path: './dp3020db02/dp3020db02.sqlproj'
           action: 'publish'
-          build-arguments: '-p:Configuration=Release'
+          build-arguments: '-c Release'
+          arguments: '/p:DropObjectsNotInSource=true'  # Optional: Customize as needed
