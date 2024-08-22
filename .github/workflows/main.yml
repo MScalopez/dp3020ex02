@@ -17,7 +17,7 @@ jobs:
           dotnet-version: '5.0.x'
           
       - name: Build Project
-        working-directory: ./dp3020db02/dp3020db02.sqlproj
+        working-directory: ./dp3020db02
         run: dotnet build
         
       - name: Deploy to Azure SQL Database
