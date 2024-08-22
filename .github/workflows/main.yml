@@ -1,0 +1,24 @@
+name: Build and Deploy SQL Database Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+          
+      - name: Build Project
+        run: dotnet build
+        
+      - name: Deploy to Azure SQL Database
+        run: |
+          sqlpackage /Action:Publish /SourceFile:$(Build.ArtifactStagingDirectory)/LabDatabaseProject.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:LabDatabase /TargetUser:$SQL_ADMIN_USER /TargetPassword:$SQL_ADMIN_PASSWORD
