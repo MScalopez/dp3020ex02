@@ -28,16 +28,6 @@ jobs:
           $sqlpackagePath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.SQL.DataTierAppFramework -find sqlpackage.exe
           echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
 
-      - name: Debug SQLPACKAGE_PATH
-        run: echo "sqlpackage path: $env:SQLPACKAGE_PATH"
-
-      - name: Install sqlpackage if not found
-        if: ${{ env.SQLPACKAGE_PATH == '' }}
-        run: |
-          choco install sqlpackage
-          $sqlpackagePath = (Get-Command sqlpackage).Path
-          echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
-
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: |
