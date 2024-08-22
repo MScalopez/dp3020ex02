@@ -18,7 +18,7 @@ jobs:
           
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
-        run: msbuild /t:Build /p:Configuration=Release dp3020db02.sqlproj
+        run: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe /t:Build /p:Configuration=Release dp3020db02.sqlproj'
 
       - name: List Build Directory
         run: dir ./dp3020db02/bin/Release
