@@ -17,7 +17,7 @@ jobs:
       - name: Build and Deploy SQL Project
         uses: azure/sql-action@v2.3
         with:
-          connection-string: "Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;Initial Catalog=${{ secrets.SQL_DATABASE_NAME }};User=${{ secrets.SQL_ADMIN_USER }};Password=${{ secrets.SQL_ADMIN_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+          connection-string: "Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;Initial Catalog=${{ secrets.SQL_DATABASE_NAME }};User ID=${{ secrets.SQL_ADMIN_USER }};Password=${{ secrets.SQL_ADMIN_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
           path: './dp3020db02.sqlproj'
           action: 'publish'
           build-arguments: '-p:Configuration=Release'
