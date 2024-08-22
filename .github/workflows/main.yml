@@ -11,23 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Step to set up .NET SDK
-      - name: Set up .NET SDK 8.0
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      # Locate MSBuild using vswhere
-      - name: Locate MSBuild
-        id: locate-msbuild
+      # Install .NET Framework 4.8 Developer Pack
+      - name: Install .NET Framework 4.8 Developer Pack
         run: |
-          $msbuildPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-          echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+          choco install netfx-4.8-devpack -y
 
-      # Install .NET Framework 4.0 Developer Pack
-      - name: Install .NET Framework 4.0 Developer Pack
+      # Install Visual Studio Build Tools with SSDT Components (if needed)
+      - name: Install Visual Studio Build Tools
         run: |
-          choco install netfx-4.0.3-devpack -y
+          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.DataTools --includeRecommended --includeOptional" -y
 
       # Install sqlpackage using Chocolatey as a fallback
       - name: Install sqlpackage
@@ -36,16 +28,11 @@ jobs:
           $sqlpackagePath = (Get-Command sqlpackage).Path
           echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
 
-      # Debug to verify that SQLPACKAGE_PATH is set correctly
-      - name: Debug SQLPACKAGE_PATH
-        run: |
-          echo "sqlpackage path: $env:SQLPACKAGE_PATH"
-
-      # Build the SQL Database Project using MSBuild
+      # Build the SQL Database Project using MSBuild with .NET 4.8
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: |
-          & $env:MSBUILD_PATH /t:Build /p:Configuration=Release dp3020db02.sqlproj
+          & $env:MSBUILD_PATH /t:Build /p:Configuration=Release /p:TargetFrameworkVersion=v4.8 dp3020db02.sqlproj
 
       # List the build output directory
       - name: List Build Directory
