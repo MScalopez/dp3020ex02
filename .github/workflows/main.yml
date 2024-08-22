@@ -11,14 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '5.0.x'
-          
-      - name: Build Project
-        run: dotnet build
-        
+      - name: Install MSBuild (if required)
+        run: sudo apt-get install -y msbuild
+
+      - name: Build SQL Database Project
+        run: msbuild /t:Build /p:Configuration=Release ./path-to-your-sqlproj/dp3020db02.sqlproj
+      
       - name: Deploy to Azure SQL Database
         run: |
-          sqlpackage /Action:Publish /SourceFile:$(Build.ArtifactStagingDirectory)/LabDatabaseProject.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:LabDatabase /TargetUser:$SQL_ADMIN_USER /TargetPassword:$SQL_ADMIN_PASSWORD
+          sqlpackage /Action:Publish /SourceFile:$(Build.ArtifactStagingDirectory)/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
