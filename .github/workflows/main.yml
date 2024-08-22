@@ -32,7 +32,7 @@ jobs:
         run: echo "sqlpackage path: $env:SQLPACKAGE_PATH"
 
       - name: Install sqlpackage if not found
-        if: env.SQLPACKAGE_PATH == ''
+        if: ${{ env.SQLPACKAGE_PATH == '' }}
         run: |
           choco install sqlpackage
           $sqlpackagePath = (Get-Command sqlpackage).Path
