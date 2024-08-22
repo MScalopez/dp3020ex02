@@ -13,21 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install .NET Framework 4.8 Developer Pack
-      - name: Install .NET Framework 4.8 Developer Pack
+      - name: Build Connection String
+        id: connstring
         run: |
-          choco install netfx-4.8-devpack -y
-
-      # Install sqlpackage using Chocolatey as a fallback
-      - name: Install sqlpackage
-        run: |
-          choco install sqlpackage -y
+          echo "CONNECTION_STRING=Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;Initial Catalog=${{ secrets.SQL_DATABASE_NAME }};User ID=${{ secrets.SQL_USER }};Password=${{ secrets.SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" >> $GITHUB_ENV
 
       # Use Azure SQL Action to build and deploy the SQL project
       - name: Build and Deploy SQL Project
         uses: azure/sql-action@v2.3
         with:
-          connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          connection-string: ${{ env.CONNECTION_STRING }}
           path: './dp3020db02.sqlproj'
           action: 'publish'
-          build-arguments: '-p:Configuration=Release -p:TargetFrameworkVersion=v4.8'
+          build-arguments: '-p:Configuration=Release'
