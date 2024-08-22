@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "sqlpackage path: $env:SQLPACKAGE_PATH"
 
-      # Build the SQL Database Project using MSBuild
+      # Build the SQL Database Project using MSBuild with the original .sqlproj
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: |
