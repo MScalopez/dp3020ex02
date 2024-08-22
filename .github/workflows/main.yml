@@ -33,7 +33,8 @@ jobs:
 
       # Debug to verify that SQLPACKAGE_PATH is set correctly
       - name: Debug SQLPACKAGE_PATH
-        run: echo "sqlpackage path: $env:SQLPACKAGE_PATH"
+        run: |
+          echo "sqlpackage path: $env:SQLPACKAGE_PATH"
 
       # Build the SQL Database Project using MSBuild
       - name: Build SQL Database Project
