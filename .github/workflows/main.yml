@@ -1,4 +1,4 @@
-name: Check .NET Version
+name: Build and Deploy SQL Database Project
 
 on:
   push:
@@ -6,9 +6,47 @@ on:
       - main
 
 jobs:
-  check-dotnet-version:
+  build:
     runs-on: windows-latest
     steps:
-      - name: Display .NET SDK Version
+      - uses: actions/checkout@v4
+
+      # Step to set up .NET SDK specifically targeting .NET 8.0
+      - name: Set up .NET SDK 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Locate MSBuild using vswhere
+      - name: Locate MSBuild
+        id: locate-msbuild
         run: |
-          dotnet --info
+          $msbuildPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+
+      # Install sqlpackage using Chocolatey as a fallback
+      - name: Install sqlpackage
+        run: |
+          choco install sqlpackage -y
+          $sqlpackagePath = (Get-Command sqlpackage).Path
+          echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
+
+      # Debug to verify that SQLPACKAGE_PATH is set correctly
+      - name: Debug SQLPACKAGE_PATH
+        run: |
+          echo "sqlpackage path: $env:SQLPACKAGE_PATH"
+
+      # Build the SQL Database Project using MSBuild with .NET 8.0
+      - name: Build SQL Database Project
+        working-directory: ./dp3020db02
+        run: |
+          & $env:MSBUILD_PATH /t:Build /p:Configuration=Release dp3020db02.sqlproj
+
+      # List the build output directory
+      - name: List Build Directory
+        run: dir ./dp3020db02/bin/Release
+
+      # Deploy the SQL Database using sqlpackage.exe
+      - name: Deploy to Azure SQL Database
+        run: |
+          & $env:SQLPACKAGE_PATH /Action:Publish /SourceFile:./dp3020db02/bin/Release/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
