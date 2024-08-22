@@ -7,21 +7,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install .NET SDK
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '5.0.x'
-
+          
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: msbuild /t:Build /p:Configuration=Release dp3020db02.sqlproj
-        
+
       - name: List Build Directory
-        run: ls -R ./dp3020db02/bin/Release
+        run: dir ./dp3020db02/bin/Release
         
       - name: Deploy to Azure SQL Database
         run: |
