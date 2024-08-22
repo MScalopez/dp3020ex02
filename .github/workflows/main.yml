@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "CONNECTION_STRING=Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;Initial Catalog=${{ secrets.SQL_DATABASE_NAME }};User ID=${{ secrets.SQL_USER }};Password=${{ secrets.SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" >> $GITHUB_ENV
 
-      # Debugging Step (optional)
+      # Debugging Step to Print Connection String (corrected)
       - name: Print Connection String
         run: echo ${{ env.CONNECTION_STRING }}
 
