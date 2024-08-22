@@ -22,5 +22,5 @@ jobs:
         
       - name: Deploy to Azure SQL Database
         run: |
-          sqlpackage /Action:Publish /SourceFile:$(Build.ArtifactStagingDirectory)/LabDatabaseProject.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:LabDatabase /TargetUser:$SQL_ADMIN_USER /TargetPassword:$SQL_ADMIN_PASSWORD
+          sqlpackage /Action:Publish /SourceFile:./dp3020db02/bin/Release/dp3020db02.dacpac /TargetServerName:${{ secrets.SQL_SERVER_NAME }} /TargetDatabaseName:dp3020db02 /TargetUser:${{ secrets.SQL_ADMIN_USER }} /TargetPassword:${{ secrets.SQL_ADMIN_PASSWORD }}
 
