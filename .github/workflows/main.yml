@@ -16,10 +16,16 @@ jobs:
         with:
           dotnet-version: '5.0.x'
           
+      - name: Locate MSBuild
+        id: locate-msbuild
+        run: |
+          $msbuildPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: |
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /t:Build /p:Configuration=Release dp3020db02.sqlproj
+          & $env:MSBUILD_PATH /t:Build /p:Configuration=Release dp3020db02.sqlproj
 
       - name: List Build Directory
         run: dir ./dp3020db02/bin/Release
