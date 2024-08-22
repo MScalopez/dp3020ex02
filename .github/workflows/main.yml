@@ -13,21 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Connection String
-        id: connstring
-        run: |
-          echo "CONNECTION_STRING=Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;Initial Catalog=${{ secrets.SQL_DATABASE_NAME }};User ID=${{ secrets.SQL_USER }};Password=${{ secrets.SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" >> $GITHUB_ENV
-
-      # Debugging Step to Print Connection String
-      - name: Print Connection String
-        run: |
-          echo "${{ env.CONNECTION_STRING }}"
-
-      # Use Azure SQL Action to build and deploy the SQL project
+      # Directly set the connection string inline
       - name: Build and Deploy SQL Project
         uses: azure/sql-action@v2.3
         with:
-          connection-string: ${{ env.CONNECTION_STRING }}
+          connection-string: "Server=tcp:${{ secrets.SQL_SERVER_NAME }},1433;Initial Catalog=${{ secrets.SQL_DATABASE_NAME }};User ID=${{ secrets.SQL_USER }};Password=${{ secrets.SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
           path: './dp3020db02.sqlproj'
           action: 'publish'
           build-arguments: '-p:Configuration=Release'
