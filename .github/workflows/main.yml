@@ -30,7 +30,7 @@ jobs:
           echo "SQLPACKAGE_PATH=$sqlpackagePath" >> $env:GITHUB_ENV
 
       - name: Debug SQLPACKAGE_PATH
-        run: echo "sqlpackage path: $env:SQLPACKAGE_PATH"
+        run: echo 'sqlpackage path: $env:SQLPACKAGE_PATH'
 
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
