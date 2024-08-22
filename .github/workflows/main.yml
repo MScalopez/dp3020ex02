@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Step to set up .NET SDK specifically targeting .NET 8.0
+      # Step to set up .NET SDK
       - name: Set up .NET SDK 8.0
         uses: actions/setup-dotnet@v4
         with:
@@ -23,6 +23,11 @@ jobs:
         run: |
           $msbuildPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
           echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+
+      # Install .NET Framework 4.0 Developer Pack
+      - name: Install .NET Framework 4.0 Developer Pack
+        run: |
+          choco install netfx-4.0.3-devpack -y
 
       # Install sqlpackage using Chocolatey as a fallback
       - name: Install sqlpackage
@@ -36,7 +41,7 @@ jobs:
         run: |
           echo "sqlpackage path: $env:SQLPACKAGE_PATH"
 
-      # Build the SQL Database Project using MSBuild with .NET 8.0
+      # Build the SQL Database Project using MSBuild
       - name: Build SQL Database Project
         working-directory: ./dp3020db02
         run: |
