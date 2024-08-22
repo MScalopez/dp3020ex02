@@ -18,6 +18,6 @@ jobs:
         uses: azure/sql-action@v2.3
         with:
           connection-string: "Server=tcp:calopezdp3020svr02,1433;Initial Catalog=dp3020db02;User ID=dp3020admin;Password=$@P@ssW0rd;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-          path: './dp3020db02.sqlproj'
+          path: './dp3020db02/dp3020db02.sqlproj'
           action: 'publish'
           build-arguments: '-p:Configuration=Release'
